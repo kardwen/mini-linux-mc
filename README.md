@@ -172,7 +172,7 @@ To automatically start the server every time the machine boots, first create a n
 sudo nvim /etc/systemd/system/minecraft.service
 ```
 
-``minecraft.service``:
+``minecraft.service``
 
 ```toml
 [Unit]
@@ -247,7 +247,7 @@ sudo apt install htop
 
 ### Backups
 
-Start by creating a simple sript for manual backups:
+Start by creating a simple script for manual backups:
 
 ```sh
 nvim ~/scripts/backup_minecraft_server
@@ -370,7 +370,7 @@ sudo nvim /etc/polkit-1/rules.d/85-suspend.rules
 sudo chmod 755 /etc/polkit-1/rules.d
 sudo chmod 644 /etc/polkit-1/rules.d/85-suspend.rules
 ```
-
+``85-suspend.rules``
 ```js
 polkit.addRule(function(action, subject) {
     if (action.id == "org.freedesktop.login1.suspend" &&
