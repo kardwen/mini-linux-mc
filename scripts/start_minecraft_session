@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Create a new tmux session and run the server in it
+tmux new-session -d -s minecraft -n paper -c ~/minecraft '~/scripts/run_minecraft_server'
+
+# Run the script for automatically suspending the server in a new panel to the right
+tmux split-window -h -t minecraft '~/scripts/idle_suspend_minecraft'
+
+# Open a new panel above the suspend script
+tmux split-window -v -b -t minecraft -c ~/minecraft
