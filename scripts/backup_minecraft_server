@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Create a backup of the entire ~/minecraft directory
+# in ~/backups/minecraft
+mkdir -p ~/backups/minecraft
+current_date=$(date -u +"%Y-%m-%d-%H-%M-%S-UTC")
+filename="$current_date-${1:-manual}.tar.gz"
+echo "Backup filename: $filename"
+echo "Creating archive..."
+tar -zcf ~/backups/minecraft/$filename -C ~/minecraft .
