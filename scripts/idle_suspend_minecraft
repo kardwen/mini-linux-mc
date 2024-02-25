@@ -1,0 +1,47 @@
+#!/bin/sh
+
+PASSWORD="<yourrconpassword"
+# Minimum delay in minutes before suspending > 1
+MIN_DELAY=15
+
+previously_empty=0
+
+echo "Monitoring Minecraft server idle state..."
+
+while true; do
+    interval="$((MIN_DELAY * 60))"
+    if [ "$interval" -lt 60 ]; then
+        interval=60
+    fi
+    sleep "$interval"
+    current_date=$(date -u +"%Y-%m-%d-%H-%M-%S-UTC")
+    reply=$(mcrcon -p "$PASSWORD" -c list)
+    player_count=$(echo "$reply" | grep -oE '[0-9]+' | head -1)
+    if [ "$player_count" -eq 0 ]; then
+        echo "$current_date Server is idle"
+        if [ "$previously_empty" -eq 0 ]; then
+            previously_empty=1
+            echo "Suspending server in $MIN_DELAY minutes"
+            mcrcon -p "$PASSWORD" "say Suspending server in $MIN_DELAY minutes"
+        else
+            if ss -t | grep -q 'ssh'; then
+                echo "Suspension delayed by $MIN_DELAY minutes"
+                mcrcon -p "$PASSWORD" "say Suspension delayed by $MIN_DELAY minutes"
+                continue
+            fi
+            previously_empty=0
+            echo "Suspending server..." 
+            mcrcon -p "$PASSWORD" "say Suspending server..."
+            if ! systemctl suspend; then
+                echo "Could not suspend system"
+                mcrcon -p "$PASSWORD" "say Could not suspend system"
+            else
+                current_date=$(date -u +"%Y-%m-%d-%H-%M-%S-UTC")
+                echo "Server resumed from suspend"
+            fi
+        fi
+    else
+        echo "$current_date Players online: $player_count"
+        previously_empty=0
+    fi
+done
