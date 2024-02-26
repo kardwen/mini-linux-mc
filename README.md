@@ -14,7 +14,7 @@ You'll need:
 
 * A reliable internet connection and the ability to change your router settings
 * A Mac mini, recent Raspberry Pi or similar machine with
-  * A minimum of 8GB of RAM (just my personal preference)
+  * A minimum of 8GB of RAM (my preference)
   * At least a dual core CPU
 
 ## Debian Installation
@@ -149,7 +149,7 @@ cd ~/minecraft/plugins
 wget https://github.com/EssentialsX/Essentials/releases/download/2.20.1/EssentialsX-2.20.1.jar
 ```
 
-Essential makes use of two addional plugins: Vault and LuckPerms. Install them in a similiar fashion. Restart your server and upon typing ``plugins`` into the server console your newly-installed plugins should show up.
+EssentialsX makes use of two addional plugins: Vault and LuckPerms. Install them in a similiar fashion. Restart your server and upon typing ``plugins`` into the server console your newly-installed plugins should show up.
 
 ## Administration
 
@@ -275,7 +275,7 @@ For extracting an archive execute:
 tar -zxf <backup.tar.gz>
 ```
 
-The Essentials plugin can be used to automate your backups by searching for the appropriate option in ``~/minecraft/plugins/Essentials/config.yml`` and referencing your script:
+The EssentialsX plugin can be used to automate your backups by searching for the appropriate option in ``~/minecraft/plugins/Essentials/config.yml`` and referencing your script:
 
 ```yaml
 backup:
@@ -331,7 +331,7 @@ rcon.password=<yourrconpassword>
 rcon.port=25575
 ```
 
-The command line tool to send commands to the server that we are going to use is [mrcon](https://github.com/Tiiffi/mcrcon?tab=readme-ov-file). It is written in C and has very few dependencies, therefore building it from source is straightforward:
+The command line tool to send commands to the server that we are going to use is [mcrcon](https://github.com/Tiiffi/mcrcon?tab=readme-ov-file). It is written in C and has very few dependencies, therefore building it from source is straightforward:
 
 ```sh
 sudo apt install git
