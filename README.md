@@ -35,7 +35,7 @@ user: pauline
 
 It may be advisable to disable the startup sound for a server application, for the Mac mini this can be achieved by booting macOS in [single-user mode](https://support.apple.com/en-us/102603) and issuing ``nvram SystemAudioVolume=%00``. For other computers this can be usually configured in the UEFI menu.
 
-Normally you should be able to immediately login to your Debian installation via SSH. However, because my 2011 Mac mini has a defective AMD GPU which prevents it from starting correctly, I needed to take a few extra steps described at the end of this document.
+Normally you should be able to immediately login to your Debian installation via SSH. However, because my 2011 Mac mini has a defective AMD GPU which prevented it from starting correctly, I needed to take a few extra steps described at the end of this document.
 
 ## Connection via SSH
 
@@ -49,7 +49,7 @@ You could also look up the IP adress of your Mac mini in your router settings an
 
 ## Basic Setup
 
-Set up sudo:
+Set up ``sudo``:
 
 ```sh
 su -
@@ -58,7 +58,7 @@ adduser pauline sudo
 exit
 ```
 
-You may want to disable root login (see <https://wiki.archlinux.org/title/sudo#Disable_root_login>) and use ``sudo -i`` instead when neccessary, be careful not to lock yourself out when configuring it. You will have to logout and back in again in order for the changes to take effect.
+You may want to disable root login (see <https://wiki.archlinux.org/title/sudo#Disable_root_login>) and use ``sudo -i`` instead when neccessary. Be careful not to lock yourself out when configuring it. You will have to logout and back in again in order for the changes to take effect.
 
 Install an editor of your choice, preferably with syntax highlighting, a file manager and the terminal multiplexer ``tmux``:
 
@@ -98,7 +98,7 @@ cd ~/minecraft
 curl -OJ https://api.papermc.io/v2/projects/paper/versions/1.20.4/builds/430/downloads/paper-1.20.4-430.jar
 ```
 
-Run the server with an initial and maximum heap size of 4GB, make sure to adjust the parameters according to the available memory reserves of your system:
+Run the server with an initial and maximum heap size of 4GB with the following command (adjust the parameters according to the available memory reserves of your system):
 
 ```sh
 java -Xmx4G -Xms4G -jar paper-1.20.4-430.jar --nogui
@@ -118,7 +118,7 @@ nvim ~/scripts/run_minecraft_server
 chmod +x ~/script/run_minecraft_server
 ```
 
-Script to start the Paper Minecraft server ``~/scripts/run_minecraft_server`` (you can use this [Start Script Generator](https://docs.papermc.io/misc/tools/start-script-gen), make sure to retain a sufficient amount of memory):
+Here is my script for starting the Minecraft server in ``~/scripts`` (you can use this [Start Script Generator](https://docs.papermc.io/misc/tools/start-script-gen), make sure to retain a sufficient amount of memory):
 
 ```sh
 #!/bin/sh
@@ -157,7 +157,7 @@ EssentialsX makes use of two addional plugins: Vault and LuckPerms. Install them
 
 The Minecraft server can be configured to be automatically run in a detached terminal session on startup. The easiest way to manage this and allow that your server continues running even when you are logged out is via the terminal multiplexer ``tmux``. You can find a short, nicely written introduction here: <https://hamvocke.com/blog/a-quick-and-easy-guide-to-tmux> or refer to the official wiki of the [project](https://github.com/tmux/tmux/wiki/Getting-Started).
 
-Here is th script to start the Paper Minecraft server in a new tmux session ``~/scripts/start_minecraft_session``, remember to make it executable:
+Create a script ``~/scripts/start_minecraft_session`` to start the Paper Minecraft server in a new tmux session, remember to make it executable:
 
 ```sh
 #!/bin/sh
@@ -318,9 +318,9 @@ Finally activate forwarding of port ``25565`` in your router settings. Additiona
 ### Suspend
 
 If your router supports waking up the server via LAN on incoming requests, then this could be a simple solution to automatically suspend and resume a small server.
-While it certainly has it flaws, it does work well enough to suspend the server for most of the time when it's idle.
+While it certainly has it flaws, it does work well enough to suspend the server for most of the time when it's idle (server polling of clients is a problem though).
 
-Therefore I wrote a script that utilizes the remote console for Minecraft servers (RCON) to interact with the Paper server and automatically suspend the computer. If no player is online at two discrete points in time in a row it will suspend the server unless a SSH connection is present.
+Therefore I wrote a script that utilizes the remote console for Minecraft servers (RCON) to interact with the Paper server and automatically suspend the computer. If no player is online at two discrete points in time in a row, it will suspend the server unless a SSH connection is present.
 
 As a first step you need to configure RCON in ``server.properties``:
 
@@ -399,12 +399,23 @@ Write-Host "Press any key to continue..."
 $null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
 ```
 
+It is also possible to create a batch script that runs the same powershell script:
+
+```batch
+@echo off
+
+set "ps_script=Write-Output 'Waking up Mini Server'; Test-NetConnection -ComputerName yourdynamicdns.net -Port 25565; Write-Host 'Press any key to continue...'; $null = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')"
+
+echo %ps_script% | powershell -NoProfile -ExecutionPolicy Bypass -
+```
+
 ## Mac mini (Mid 2011) AMD GPU Issue
 
 My mid 2011 Mac mini (Macmini5,2) has a faulty dedicated AMD Radeon HD 6630M GPU (which seems to be a common issue) and while it also comes with integrated Intel graphics, this will prevent it from booting correctly. Unfortunately disabling the dedicated AMD graphics with the nvram ``gpu-power-prefs`` setting did not work.
 
-For this reason you'll need to press ``e`` in GRUB menu and add ``nomodeset`` to the Linux kernel parameters on the first start. This will prevent the driver for the GPU to be loaded for the time being and allows you to permanently disable the AMD driver and fix the issue of a non-booting OS.
-Issue ``sudo -i`` or ``su -`` before the running the following commands if ``sudo`` is not installed yet.
+For this reason when first starting the computer press ``e`` in the GRUB menu and add ``nomodeset`` to the Linux kernel parameters. This will prevent the driver for the GPU to be loaded for the time being and allows you to permanently disable the AMD driver and fix the issue of a non-booting OS.
+
+Next issue ``sudo -i`` (or ``su -`` if ``sudo`` is not installed yet) before the running the following commands.
 
 ```sh
 vi /etc/default/grub
