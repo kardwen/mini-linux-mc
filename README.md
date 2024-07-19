@@ -209,7 +209,7 @@ mkdir -p ~/.config/tmux
 nvim ~/.config/tmux/tmux.conf
 ```
 
-The most important part is to install neofetch and update its configuration to flex on your friends:
+You may also install neofetch and update its configuration:
 
 ```sh
 sudo apt install neofetch
